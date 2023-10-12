@@ -32,6 +32,8 @@ import Createuser from "../components/users/create-user";
 import Listuser from "../components/users/list-user";
 import Createvendors from "../components/vendors/create.vendors";
 import Listvendors from "../components/vendors/list-vendors";
+import DigitalAddOrder from "../components/common/orders/digital/digital-add-order";
+import DigitalgetOrder from "../components/common/orders/digital/digital-get-order";
 
 const LayoutRoutes = () => {
   return (
@@ -83,6 +85,14 @@ const LayoutRoutes = () => {
           <Route
             path={`${process.env.PUBLIC_URL}/products/digital/digital-add-product`}
             element={<Digitaladdpro />}
+          />
+          {/* <Route
+            path={`${process.env.PUBLIC_URL}/orders/digital/digital-add-order`}
+            element={<DigitalAddOrder />}
+          /> */}
+          <Route
+            path={`${process.env.PUBLIC_URL}/orders/digital/digital-order-list`}
+            element={<DigitalgetOrder />}
           />
 
           <Route
