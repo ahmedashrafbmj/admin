@@ -176,12 +176,12 @@ const Datatable = ({ myData, myClass, multiSelectOption, pagination }) => {
     selectedBrands.map((e, i) => formData.append(`brand[${i}]`, e?._id));
     console.log(selectedBrands, "selectedBrands");
     // Append the updated images
-    if (Array.isArray(file) && file.length > 0) {
-      // Only proceed if 'file' is an array and not empty
-      file.forEach((filess, index) => {
-        formData.append(`images`, filess.name);
-      });
-    }
+    const filesArray = Array.from(file);
+    filesArray.forEach((filess, index) => {
+      formData.append(`images`, filess);
+    });
+    // const filesArray = Array?.from(file);
+    // filesArray?.map((file, i) => formData?.append("images", file));
 
     try {
       // Send a PUT request to update the product

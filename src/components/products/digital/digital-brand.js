@@ -25,14 +25,18 @@ import {
 import baseurl from "../../../assets/baseurl/baseurl";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Delete } from "../../../Config/apibasemethod";
 
 const Digital_brand = () => {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
   console.log(file, "file cat");
+  const [cat, setResCategory] = useState();
+
   const [res, setRes] = useState();
   const [editingRow, setEditingRow] = useState(null);
-
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [SelectedCategory, setSelectedCategory] = useState([]);
   const [image, setimage] = useState();
 
   const columns = [
@@ -47,6 +51,16 @@ const Digital_brand = () => {
 
       sortable: true,
     },
+    {
+      name: "Category",
+      selector: "categories",
+      sortable: true,
+    },
+    // {
+    //   name: "Brands",
+    //   selector: "brand",
+    //   sortable: true,
+    // },
     {
       name: "images",
       cell: (row) => (
@@ -78,7 +92,7 @@ const Digital_brand = () => {
             </div>
           </button>
           <button
-            // onClick={() => deleteRow(row?._id)} // Pass the entire row
+            onClick={() => deleteRow(row?._id)} // Pass the entire row
             className="btn btn-primary p-2 ms-3 shadow btn-xs sharp me-1"
           >
             <div
@@ -97,15 +111,39 @@ const Digital_brand = () => {
     },
   ];
 
+  const deleteRow = (rowId) => {
+    Delete("deleteBrand", rowId)
+      .then((response) => {
+        if (response.status === 200) {
+          // If the delete operation is successful on the server, update the UI
+          const updatedData = res.filter((item) => item._id !== rowId);
+          setRes(updatedData);
+          toast.success("Successfully Deleted !");
+        } else {
+          console.error("Failed to delete the item.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting item:", error);
+      });
+  };
+
   const onOpenModal = () => {
     setOpen(true);
+    editRow(null);
   };
   const editRow = (row) => {
-    console.log(row, "rooww");
+    // console.log(row, "rooww");
     setOpen(true);
-
-    setEditingRow(row);
-    // setinpData(row);
+    if (row) {
+      setEditingRow(row);
+      setInputValue(row);
+      // console.log(row, "editingRowRowhoto");
+    } else {
+      setEditingRow(null);
+      // console.log(row, "editingRowRowhotonaho");
+      setInputValue({ name: "", link: "" });
+    }
 
     // setShow(true);
   };
@@ -144,11 +182,14 @@ const Digital_brand = () => {
     filesArray.map((file, i) => formData.append("images", file));
     formData.append("name", inputValue.name);
     formData.append("link", inputValue.link);
-    if (res?._id) {
+    SelectedCategory.map((e, i) => formData.append(`categories[${i}]`, e?._id));
+    // selectedBrands.map((e, i) => formData.append(`brand[${i}]`, e?._id));
+
+    if (editingRow?._id) {
       try {
         // Send a PUT request to update the product
         const response = await axios.put(
-          `${baseurl.url}updateProduct/${editingRow._id}`,
+          `${baseurl.url}updateBrand/${editingRow?._id}`,
           formData,
           {
             headers: {
@@ -160,6 +201,12 @@ const Digital_brand = () => {
         if (response.status === 200) {
           // Handle success
           console.log("barnd updated successfully");
+          onCloseModal();
+          // const updatedData = res.filter(
+          //   (item) => item?._id !== editingRow?._id
+          // );
+          // setRes(updatedData);
+          window.location.reload();
 
           //   setShow(false);
           toast.success("brand updated successfully");
@@ -171,28 +218,58 @@ const Digital_brand = () => {
         // Handle errors, e.g., show an error message
         console.error("Update failed", error);
       }
-    }
+    } else {
+      try {
+        // Send a POST request to your API endpoint
+        const response = await axios.post(`${baseurl.url}addBrand`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data", // Important for sending form data
+          },
+        });
 
-    try {
-      // Send a POST request to your API endpoint
-      const response = await axios.post(`${baseurl.url}addBrand`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Important for sending form data
-        },
-      });
+        // Handle the response, e.g., show a success message
+        if (response.data.status) {
+          // (response.data.message);alert
+          toast.success("Successfully Deleted !");
+          const updatedData = res.filter(
+            (item) => item._id !== editingRow?._id
+          );
+          setRes(updatedData);
+          // console.log(, "formData");
+          fetchDataFromServer();
 
-      // Handle the response, e.g., show a success message
-      if (response.data.status) {
-        alert(response.data.message);
-        toast.success("Successfully Deleted !");
-
-        fetchDataFromServer();
-        onCloseModal();
+          onCloseModal();
+        }
+        console.log("Upload successful", response);
+      } catch (error) {
+        // Handle errors, e.g., show an error message
+        console.error("Upload failed", error);
       }
-      console.log("Upload successful", response);
-    } catch (error) {
-      // Handle errors, e.g., show an error message
-      console.error("Upload failed", error);
+    }
+  };
+  const handleCheckboxChange = (e, type) => {
+    const brandId = e.target.value;
+    const isChecked = e.target.checked;
+    console.log(isChecked, "eeeeeeeee", type, "type");
+
+    if (isChecked) {
+      // If the checkbox is checked, add the brand to the selectedBrands array
+      if (type === "selectedBrand") {
+        setSelectedBrands([...selectedBrands, { _id: brandId }]);
+      } else {
+        setSelectedCategory([...SelectedCategory, { _id: brandId }]);
+      }
+    } else {
+      if (type === "selectedBrand") {
+        setSelectedBrands(
+          selectedBrands.filter((brand) => brand._id !== brandId)
+        );
+      } else {
+        setSelectedCategory(
+          SelectedCategory.filter((brand) => brand._id !== brandId)
+        );
+      }
+      // If the checkbox is unchecked, remove the brand from the selectedBrands array
     }
   };
 
@@ -213,10 +290,23 @@ const Digital_brand = () => {
     }
   };
   console.log(image, "image");
+  const fetchDataFromServercat = async () => {
+    try {
+      // Send a GET request to your API endpoint
+      const response = await axios.get(`${baseurl.url}getCategories`);
+      // Handle the response data, e.g., set it in state
+      setResCategory(response.data.categories);
+      console.log(response.data, "response.da");
+    } catch (error) {
+      // Handle errors, e.g., show an error message
+      console.error("GET request failed", error);
+    }
+  };
 
   useEffect(() => {
     // Fetch data from the server when the component mounts
     fetchDataFromServer();
+    fetchDataFromServercat();
   }, []);
 
   return (
@@ -265,7 +355,9 @@ const Digital_brand = () => {
                             className="form-control"
                             name="name"
                             onChange={handleInputChange}
-                            defaultValue={editingRow?.name || null}
+                            defaultValue={
+                              editingRow?._id ? editingRow?.name : null
+                            }
                           />
                         </FormGroup>
                         <FormGroup>
@@ -280,11 +372,40 @@ const Digital_brand = () => {
                             className="form-control"
                             name="link"
                             onChange={handleInputChange}
-                            defaultValue={editingRow?.link}
+                            // defaultValue={editingRow?.link}
+                            defaultValue={
+                              editingRow?._id ? editingRow?.link : null
+                            }
                           />
                         </FormGroup>
+                        <p>Select Categories</p>
+                        {cat?.map((e, i) => {
+                          const isChecked = editingRow?.categories?.includes(
+                            e?.name
+                          ); // Invert the value
 
-                        <p className="mt-3">Select Brands</p>
+                          return (
+                            <FormGroup check key={i}>
+                              <Label check>
+                                <Input
+                                  type="checkbox"
+                                  name="isChecked"
+                                  value={e?._id}
+                                  defaultChecked={isChecked} // Use defaultChecked for checkboxes
+                                  onChange={(event) =>
+                                    handleCheckboxChange(
+                                      event,
+                                      "selectedCategory"
+                                    )
+                                  }
+                                />{" "}
+                                {e?.name}
+                              </Label>
+                            </FormGroup>
+                          );
+                        })}
+
+                        {/* <p className="mt-3">Select Brands</p>
                         {res?.map((e, i) => {
                           //   const isChecked = editingRow?.brand?.includes(
                           //     e?.name
@@ -299,15 +420,15 @@ const Digital_brand = () => {
                                   name="isChecked"
                                   value={e?._id}
                                   //   defaultChecked={isChecked} // Use defaultChecked for checkboxes
-                                  //   onChange={(event) =>
-                                  //     handleCheckboxChange(event, "selectedBrand")
-                                  //   }
+                                  onChange={(event) =>
+                                    handleCheckboxChange(event, "selectedBrand")
+                                  }
                                 />{" "}
                                 {e?.name}
                               </Label>
                             </FormGroup>
                           );
-                        })}
+                        })} */}
 
                         <FormGroup>
                           <Label
