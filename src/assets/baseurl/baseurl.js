@@ -1,5 +1,5 @@
 const baseurl = {
-  url: "https://backend.terakarachi.com/api/",
-  image: "https://backend.terakarachi.com/uploads/",
+  url: "http://localhost:3000/api/",
+  image: "http://localhost:3000/uploads/",
 };
 export default baseurl;

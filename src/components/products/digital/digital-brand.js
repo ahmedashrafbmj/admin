@@ -138,6 +138,7 @@ const Digital_brand = () => {
     if (row) {
       setEditingRow(row);
       setInputValue(row);
+
       // console.log(row, "editingRowRowhoto");
     } else {
       setEditingRow(null);

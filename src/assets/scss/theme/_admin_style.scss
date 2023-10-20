@@ -4368,3 +4368,11 @@ $i: 1;
   height: 100%;
   text-align: center;
 }
+
+.category-container {
+  margin-bottom: 2px; /* Adjust the value as needed */
+}
+
+.category-container > div {
+  margin-bottom: 10px; /* Add margin between categories */
+}

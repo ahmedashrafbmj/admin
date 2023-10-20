@@ -55,6 +55,11 @@ const Digital_add_pro = () => {
     longDescription: "",
     ProductLink: "",
   });
+  const [subcategories, setSubcategories] = useState([]);
+  const [selectedSubcategories, setSelectedSubcategories] = useState([]);
+
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
   console.log(inputValue, "inputValue");
   const handleFormSubmit = async () => {
     // Create a FormData object and append the file to it
@@ -156,6 +161,11 @@ const Digital_add_pro = () => {
       } else {
         setSelectedCategory([...SelectedCategory, { _id: brandId }]);
       }
+      if (type === "selectedCategory") {
+        setSelectedCategories([...selectedCategories, { _id: brandId }]);
+      } else if (type === "selectedSubcategory") {
+        setSelectedSubcategories([...selectedSubcategories, { _id: brandId }]);
+      }
     } else {
       if (type === "selectedBrand") {
         setSelectedBrands(
@@ -166,12 +176,36 @@ const Digital_add_pro = () => {
           SelectedCategory.filter((brand) => brand._id !== brandId)
         );
       }
+      if (type === "selectedCategory") {
+        setSelectedCategories(
+          selectedCategories.filter((category) => category._id !== brandId)
+        );
+      } else if (type === "selectedSubcategory") {
+        setSelectedSubcategories(
+          selectedSubcategories.filter((category) => category._id !== brandId)
+        );
+      }
       // If the checkbox is unchecked, remove the brand from the selectedBrands array
+    }
+  };
+
+  const GetSubcategories = async () => {
+    try {
+      // Send a GET request to your API endpoint
+      const response = await axios.get(`${baseurl.url}getsubCategories`);
+      // Handle the response data, e.g., set it in state
+      // setResCategory(response.data.categories);
+      setSubcategories(response.data.categories);
+      console.log(response.data, "dddddddddddd.data");
+    } catch (error) {
+      // Handle errors, e.g., show an error message
+      console.error("GET request failed", error);
     }
   };
   useEffect(() => {
     // Fetch data from the server when the component mounts
     fetchDataFromServer();
+    GetSubcategories();
     fetchDataFromServerBrands();
   }, []);
   return (
@@ -257,7 +291,7 @@ const Digital_add_pro = () => {
                       value={inputValue.totalUnits}
                     />
                   </FormGroup>
-                  <p>Select Categories</p>
+                  {/* <p>Select Categories</p>
                   {cat?.map((e, i) => {
                     return (
                       <>
@@ -269,6 +303,7 @@ const Digital_add_pro = () => {
                               value={e?._id}
                               // checked={isChecked}
                               // onChange={handleCheckboxChange}
+
                               onChange={(e) =>
                                 handleCheckboxChange(e, "selectedCategory")
                               }
@@ -278,7 +313,55 @@ const Digital_add_pro = () => {
                         </FormGroup>
                       </>
                     );
-                  })}
+                  })} */}
+                  <p>Select Categories</p>
+                  <div className="category-container">
+                    {cat?.map((e, i) => (
+                      <div key={e._id}>
+                        <FormGroup check>
+                          <Label check>
+                            <Input
+                              type="checkbox"
+                              name="isChecked"
+                              value={e?._id}
+                              onChange={(e) =>
+                                handleCheckboxChange(e, "selectedCategory")
+                              }
+                            />{" "}
+                            {e?.name}
+                          </Label>
+                        </FormGroup>
+
+                        {selectedCategories.find(
+                          (cat) => cat._id === e._id
+                        ) && (
+                          <div className="ms-5">
+                            <p className="">Select Subcategories</p>
+                            {subcategories.map((subcat, i) => (
+                              <div key={subcat._id}>
+                                <FormGroup check>
+                                  <Label check>
+                                    <Input
+                                      type="checkbox"
+                                      name="isChecked"
+                                      value={subcat._id}
+                                      onChange={(e) =>
+                                        handleCheckboxChange(
+                                          e,
+                                          "selectedSubcategory"
+                                        )
+                                      }
+                                    />{" "}
+                                    {subcat.name}
+                                  </Label>
+                                </FormGroup>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                   <p className="mt-3">Select Brands</p>
                   {brands?.map((e, i) => {
                     return (
