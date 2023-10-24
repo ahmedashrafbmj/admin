@@ -58,7 +58,7 @@ const Digital_add_pro = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
 
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  // const [selectedCategories, setSelectedCategories] = useState([]);
 
   console.log(inputValue, "inputValue");
   const handleFormSubmit = async () => {
@@ -76,6 +76,10 @@ const Digital_add_pro = () => {
     formData.append("longDescription", inputValue.longDescription);
     SelectedCategory.map((e, i) => formData.append(`category[${i}]`, e._id));
     selectedBrands.map((e, i) => formData.append(`brand[${i}]`, e._id));
+    selectedSubcategories.map((e, i) =>
+      formData.append(`subcategories[${i}]`, e._id)
+    );
+    console.log(SelectedCategory, "SelectedCategory");
     // formData.append(`images`, file);
     const filesArray = Array.from(file);
     filesArray.forEach((filess, index) => {
@@ -93,7 +97,7 @@ const Digital_add_pro = () => {
       // Handle the response, e.g., show a success message
       if (response.data.status === true) {
         alert(response.data.message);
-        window.location.reload();
+        // window.location.reload();
         setInputValue({
           name: "",
           price: "",
@@ -158,34 +162,28 @@ const Digital_add_pro = () => {
       // If the checkbox is checked, add the brand to the selectedBrands array
       if (type === "selectedBrand") {
         setSelectedBrands([...selectedBrands, { _id: brandId }]);
-      } else {
+      } else if (type === "selectedCategory") {
         setSelectedCategory([...SelectedCategory, { _id: brandId }]);
       }
-      if (type === "selectedCategory") {
-        setSelectedCategories([...selectedCategories, { _id: brandId }]);
-      } else if (type === "selectedSubcategory") {
+      if (type === "selectedSubcategory") {
         setSelectedSubcategories([...selectedSubcategories, { _id: brandId }]);
       }
     } else {
+      // If the checkbox is unchecked, remove the brand from the selectedBrands array
       if (type === "selectedBrand") {
         setSelectedBrands(
           selectedBrands.filter((brand) => brand._id !== brandId)
         );
-      } else {
+      } else if (type === "selectedCategory") {
         setSelectedCategory(
           SelectedCategory.filter((brand) => brand._id !== brandId)
         );
       }
-      if (type === "selectedCategory") {
-        setSelectedCategories(
-          selectedCategories.filter((category) => category._id !== brandId)
-        );
-      } else if (type === "selectedSubcategory") {
+      if (type === "selectedSubcategory") {
         setSelectedSubcategories(
           selectedSubcategories.filter((category) => category._id !== brandId)
         );
       }
-      // If the checkbox is unchecked, remove the brand from the selectedBrands array
     }
   };
 
@@ -196,7 +194,7 @@ const Digital_add_pro = () => {
       // Handle the response data, e.g., set it in state
       // setResCategory(response.data.categories);
       setSubcategories(response.data.categories);
-      console.log(response.data, "dddddddddddd.data");
+      console.log(response.data);
     } catch (error) {
       // Handle errors, e.g., show an error message
       console.error("GET request failed", error);
@@ -291,7 +289,7 @@ const Digital_add_pro = () => {
                       value={inputValue.totalUnits}
                     />
                   </FormGroup>
-                  {/* <p>Select Categories</p>
+                  <p>Select Categories</p>
                   {cat?.map((e, i) => {
                     return (
                       <>
@@ -313,8 +311,31 @@ const Digital_add_pro = () => {
                         </FormGroup>
                       </>
                     );
-                  })} */}
-                  <p>Select Categories</p>
+                  })}
+                  <p className="mt-3">Select Subcategories </p>
+                  {subcategories?.map((e, i) => {
+                    return (
+                      <>
+                        <FormGroup check>
+                          <Label check>
+                            <Input
+                              type="checkbox"
+                              name="isChecked"
+                              value={e?._id}
+                              // checked={isChecked}
+                              // onChange={handleCheckboxChange}
+
+                              onChange={(e) =>
+                                handleCheckboxChange(e, "selectedSubcategory")
+                              }
+                            />{" "}
+                            {e?.name}
+                          </Label>
+                        </FormGroup>
+                      </>
+                    );
+                  })}
+                  {/* <p>Select Categories</p>
                   <div className="category-container">
                     {cat?.map((e, i) => (
                       <div key={e._id}>
@@ -332,9 +353,7 @@ const Digital_add_pro = () => {
                           </Label>
                         </FormGroup>
 
-                        {selectedCategories.find(
-                          (cat) => cat._id === e._id
-                        ) && (
+                        {SelectedCategory.find((cat) => cat._id === e._id) && (
                           <div className="ms-5">
                             <p className="">Select Subcategories</p>
                             {subcategories.map((subcat, i) => (
@@ -361,7 +380,7 @@ const Digital_add_pro = () => {
                         )}
                       </div>
                     ))}
-                  </div>
+                  </div> */}
                   <p className="mt-3">Select Brands</p>
                   {brands?.map((e, i) => {
                     return (

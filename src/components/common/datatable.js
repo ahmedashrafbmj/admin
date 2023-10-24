@@ -730,8 +730,8 @@ const Datatable = ({ myData, myClass, multiSelectOption, pagination }) => {
                         <p>Select Categories</p>
                         {cat?.map((e, i) => {
                           const isChecked = editingRow?.category?.includes(
-                            e?.name
-                          ); // Invert the value
+                            e.name
+                          );
 
                           return (
                             <FormGroup check key={i}>
@@ -739,7 +739,7 @@ const Datatable = ({ myData, myClass, multiSelectOption, pagination }) => {
                                 <Input
                                   type="checkbox"
                                   name="isChecked"
-                                  value={e?._id}
+                                  value={e._id}
                                   defaultChecked={isChecked} // Use defaultChecked for checkboxes
                                   onChange={(event) =>
                                     handleCheckboxChange(
@@ -748,7 +748,7 @@ const Datatable = ({ myData, myClass, multiSelectOption, pagination }) => {
                                     )
                                   }
                                 />{" "}
-                                {e?.name}
+                                {e.name}
                               </Label>
                             </FormGroup>
                           );
