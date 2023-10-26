@@ -18,7 +18,7 @@ const Digital_category = () => {
 
 	const [image, setimage] = useState();
 
-
+console.log(res,"resssssssssssss");
 	const columns = [
 		{
 			name: 'Name',
@@ -86,8 +86,8 @@ const Digital_category = () => {
 		const formData = new FormData();
 		const filesArray = Array.from(file);
 		filesArray.map((file,i)=>formData.append('images', file))
-		formData.append('name', inputValue.name);
-		formData.append('link', inputValue.link);
+		formData.append('name', inputValue.name.toLocaleLowerCase());
+		formData.append('link', inputValue.link.toLocaleLowerCase());
 
 		try {
 			// Send a POST request to your API endpoint
