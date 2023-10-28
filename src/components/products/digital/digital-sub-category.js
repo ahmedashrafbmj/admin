@@ -123,21 +123,13 @@ const Digital_sub_category = () => {
     // console.log(row, "rooww");
     setOpen(true);
     if (row) {
-      console.log(
-        row.categories.map((x) => x),
-        "roooooooooooow"
-      );
       setEditingRow(row);
       setInputValue(row);
-      //   setSelectedCategory(row.categories);
-      // console.log(row, "editingRowRowhoto");
     } else {
       setEditingRow(null);
-      // console.log(row, "editingRowRowhotonaho");
+
       setInputValue({ name: "", link: "" });
     }
-
-    // setShow(true);
   };
 
   const onCloseModal = () => {
@@ -182,15 +174,11 @@ const Digital_sub_category = () => {
 
         if (response.status === 200) {
           // Handle success
-          console.log("barnd updated successfully");
-          onCloseModal();
-          // const updatedData = res.filter(
-          //   (item) => item?._id !== editingRow?._id
-          // );
-          // setRes(updatedData);
+          console.log("subCategories updated successfully");
+          setOpen(false);
+
           window.location.reload();
 
-          //   setShow(false);
           toast.success("brand updated successfully");
         } else {
           // Handle errors
@@ -216,15 +204,14 @@ const Digital_sub_category = () => {
         // Handle the response, e.g., show a success message
         if (response.data.status) {
           console.log(response.data.message, "response.data.message");
-          toast.success("Successfully Deleted !");
+          toast.success("Successfully added !");
           const updatedData = res.filter(
             (item) => item._id !== editingRow?._id
           );
           setRes(updatedData);
-          //   console.log(, "formData");
-
-          onCloseModal();
         }
+        window.location.reload();
+        setOpen(false);
         console.log("Upload successful", response);
       } catch (error) {
         // Handle errors, e.g., show an error message
@@ -242,6 +229,7 @@ const Digital_sub_category = () => {
       setimage(
         response.data.brands.map((e, i) => `${baseurl.image + e.image[0]}`)
       );
+      handleFormSubmit();
       fetchDataFromServer();
       console.log(response.data, "response.data");
     } catch (error) {

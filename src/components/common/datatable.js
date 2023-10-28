@@ -409,30 +409,28 @@ const Datatable = ({ myData, myClass, multiSelectOption, pagination }) => {
       selector: "discountedPrice",
       sortable: true,
     },
-    {
-      name: "Category",
-      selector: "category",
-      sortable: true,
-    },
-    {
-      name: "Brands",
-      selector: "brand",
-      sortable: true,
-    },
+    // {
+    //   name: "Category",
+    //   selector: "category",
+    //   sortable: true,
+    // },
+    // {
+    //   name: "Brands",
+    //   selector: "brand",
+    //   sortable: true,
+    // },
     {
       name: "images",
-      cell: (row) => {
-        console.log(row?.images, "rowrow"); // Log information here
-        return;
+      cell: (row) => (
+        //   console.log(row,"row")
         <img
-          src={row?.images} // Assuming x is the URL of an image
+          src={`${row.images[0]}`} // Assuming "image" is an array and you want the first element
           alt={`Image for ${row.name}`}
           width="50"
           height="50"
-        />;
-      },
+        />
+      ),
     },
-
     {
       name: "Action",
       cell: (row) => (
@@ -730,8 +728,8 @@ const Datatable = ({ myData, myClass, multiSelectOption, pagination }) => {
                         <p>Select Categories</p>
                         {cat?.map((e, i) => {
                           const isChecked = editingRow?.category?.includes(
-                            e?.name
-                          ); // Invert the value
+                            e.name
+                          );
 
                           return (
                             <FormGroup check key={i}>
@@ -739,7 +737,7 @@ const Datatable = ({ myData, myClass, multiSelectOption, pagination }) => {
                                 <Input
                                   type="checkbox"
                                   name="isChecked"
-                                  value={e?._id}
+                                  value={e._id}
                                   defaultChecked={isChecked} // Use defaultChecked for checkboxes
                                   onChange={(event) =>
                                     handleCheckboxChange(
@@ -748,7 +746,7 @@ const Datatable = ({ myData, myClass, multiSelectOption, pagination }) => {
                                     )
                                   }
                                 />{" "}
-                                {e?.name}
+                                {e.name}
                               </Label>
                             </FormGroup>
                           );

@@ -406,12 +406,12 @@ const OrderData = ({ myData, myClass, multiSelectOption, pagination }) => {
     },
     {
       name: "Number",
-      selector: "number[0]",
+      selector: "contact[0]",
       sortable: true,
     },
     {
       name: "Number 2 ",
-      selector: "number[1]",
+      selector: "contact[1]",
       sortable: true,
     },
     {

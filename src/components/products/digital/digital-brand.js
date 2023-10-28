@@ -51,11 +51,11 @@ const Digital_brand = () => {
 
       sortable: true,
     },
-    {
-      name: "Category",
-      selector: "categories",
-      sortable: true,
-    },
+    // {
+    //   name: "Category",
+    //   selector: "categories",
+    //   sortable: true,
+    // },
     // {
     //   name: "Brands",
     //   selector: "brand",
@@ -208,6 +208,7 @@ const Digital_brand = () => {
           // );
           // setRes(updatedData);
           window.location.reload();
+          setInputValue("")
 
           //   setShow(false);
           toast.success("brand updated successfully");
@@ -238,6 +239,7 @@ const Digital_brand = () => {
           setRes(updatedData);
           // console.log(, "formData");
           fetchDataFromServer();
+          setInputValue("")
 
           onCloseModal();
         }
